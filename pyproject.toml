@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "saltmd"
+version = "0.1.0"
+description = "OpenMM + MACE NPT molecular dynamics for molten-salt (Flibe/LiF-BeF2) chemistry-property prediction"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "ORNL" }]
+keywords = ["molecular-dynamics", "openmm", "mace", "molten-salt", "flibe", "fusion", "density"]
+
+# Lightweight deps for the planning/analysis layer (composition, structure,
+# analysis, plotting). The GPU stack (openmm, openmm-ml, torch, mace-torch) is
+# installed via the conda env (environment.frontier.yml), not declared here, so
+# this package stays installable on login nodes and laptops for planning/analysis.
+dependencies = [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+# The command-line tools live in scripts/ (run with `python scripts/<tool>.py`) so
+# they work whether or not the package is pip-installed — important on HPC where an
+# editable install may not be set up. They are intentionally not console entry points.
+
+[tool.setuptools]
+packages = ["saltmd"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

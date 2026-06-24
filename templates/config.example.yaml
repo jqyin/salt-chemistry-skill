@@ -1,0 +1,38 @@
+# Example configuration for scripts/run_npt.py
+#
+#   python scripts/run_npt.py --config templates/config.example.yaml --output-dir runs/example
+#
+# Any field omitted here falls back to the built-in default in
+# saltmd.simulation.SimulationConfig. CLI flags and environment variables
+# override anything set here (see run_npt.py for the precedence order).
+
+# --- inputs ---
+structure_pdb: structure.pdb        # periodic-box PDB (build with scripts/build_structure.py)
+model_file: assets/mace_flibe.model # fine-tuned MACE potential (ships in assets/)
+
+# --- thermodynamic state point ---
+temperature_K: 783.15               # 783.15 K = 510 C, a typical Flibe coolant temperature
+pressure_bar: 1.0
+
+# --- integration ---
+timestep_fs: 1.0
+friction_per_ps: 10.0
+barostat_interval: 50
+
+# --- run length (steps) ---
+minimize_iterations: 200            # energy minimization before dynamics (0 to disable)
+equilibration_steps: 50000          # 50 ps at 1 fs; NOT averaged into the density
+production_steps: 250000            # 250 ps at 1 fs; averaged for the reported density
+
+# --- reporting ---
+report_interval: 100                # write a state-log frame every 100 steps
+checkpoint_interval: 50000
+write_trajectory: true
+
+# --- reproducibility ---
+seed: 1                             # seeds integrator, barostat, and initial velocities
+
+# --- compute backend (usually set by the HPC launcher via env vars) ---
+platform: HIP                       # HIP (Frontier/AMD), CUDA (NVIDIA), OpenCL, or CPU
+precision: mixed
+device_index: "0"
